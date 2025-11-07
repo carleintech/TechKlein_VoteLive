@@ -38,6 +38,8 @@ import {
   Trophy,
   MapPin,
   Clock,
+  FileText,
+  Share2,
 } from 'lucide-react';
 import { formatNumber } from '@/lib/utils';
 
@@ -477,6 +479,146 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
+
+            {/* Resources & Documentation Section */}
+            <div className="space-y-6 pt-12">
+              <div className="text-center space-y-3">
+                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                  Resous & Dokumentasyon
+                </h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  Gid konplè, enfòmasyon medya, ak zouti pou itilizatè ak patnè yo
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* How to Vote Guide */}
+                <Link href="/how-to-vote">
+                  <Card className="h-full border-2 border-transparent hover:border-blue-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Info className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Kijan pou Vote</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Gid konplè etap pa etap pou vote. Tout sa ou bezwen konnen.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-blue-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Li Gid</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Admin Guide */}
+                <Link href="/admin-guide">
+                  <Card className="h-full border-2 border-transparent hover:border-purple-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Shield className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Gid Admin</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Manyèl fòmasyon pou administratè ak ekip jesyon platfòm nan.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-purple-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Aksè Gid</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Launch Ready Status */}
+                <Link href="/launch-ready">
+                  <Card className="h-full border-2 border-transparent hover:border-green-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <CheckCircle2 className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Estatistik Platfòm</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Tout fonksyon ak estati platfòm nan. 100% konplè!
+                        </p>
+                      </div>
+                      <div className="flex items-center text-green-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Wè Estatistik</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Press Release */}
+                <Link href="/press-release">
+                  <Card className="h-full border-2 border-transparent hover:border-red-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <FileText className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Kominike Lapres</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Kominike ofisyèl pou medya ak enfòmasyon pou jounalis.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-red-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Li Kominike</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Social Media Hub */}
+                <Link href="/social-media">
+                  <Card className="h-full border-2 border-transparent hover:border-pink-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Share2 className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Rezo Sosyal</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Modèl kontni, estrateji marketing, ak resous medya sosyal.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-pink-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Wè Resous</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* QR Code Generator */}
+                <Link href="/qr">
+                  <Card className="h-full border-2 border-transparent hover:border-cyan-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Sparkles className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Kòd QR</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Kreye kòd QR pou pataje platfòm nan ak swiv medya yo.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-cyan-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Kreye Kòd</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
+            </div>
           </div>
         )}
 
@@ -616,7 +758,7 @@ export default function HomePage() {
       <footer className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white mt-20">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
         <div className="relative container mx-auto px-4 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
             {/* About */}
             <div className="space-y-5">
               <div className="flex items-center gap-3">
@@ -657,6 +799,33 @@ export default function HomePage() {
                 </Link>
                 <Link href="/press" className="text-gray-300 hover:text-purple-400 transition-colors text-base font-medium">
                   Kit Medya
+                </Link>
+              </div>
+            </div>
+
+            {/* Resources */}
+            <div className="space-y-5">
+              <h3 className="font-bold text-xl text-blue-300">Resous</h3>
+              <div className="flex flex-col gap-3.5">
+                <Link href="/how-to-vote" className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Kijan pou Vote
+                </Link>
+                <Link href="/admin-guide" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Gid Admin
+                </Link>
+                <Link href="/launch-ready" className="text-gray-300 hover:text-green-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Estatistik Platfòm
+                </Link>
+                <Link href="/press-release" className="text-gray-300 hover:text-red-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Kominike Lapres
+                </Link>
+                <Link href="/social-media" className="text-gray-300 hover:text-pink-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Rezo Sosyal
                 </Link>
               </div>
             </div>
