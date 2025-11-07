@@ -32,6 +32,31 @@ export default function LivePage() {
     isLive,
   } = useVoteStats(true);
 
+  // Fetch recent votes for ticker
+  const [recentVotes, setRecentVotes] = React.useState<any[]>([]);
+  const [loadingRecent, setLoadingRecent] = React.useState(true);
+
+  const fetchRecentVotes = React.useCallback(async () => {
+    try {
+      const response = await fetch('/api/activity/recent');
+      if (!response.ok) throw new Error('Failed to fetch recent votes');
+      
+      const data = await response.json();
+      setRecentVotes(data.activities?.slice(0, 20) || []);
+    } catch (error) {
+      console.error('Error fetching recent votes:', error);
+      setRecentVotes([]);
+    } finally {
+      setLoadingRecent(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchRecentVotes();
+    const interval = setInterval(fetchRecentVotes, 10000); // Refresh every 10 seconds
+    return () => clearInterval(interval);
+  }, [fetchRecentVotes]);
+
   // Transform aggregates to candidate rankings
   const candidateRankings = React.useMemo(() => {
     return aggregates.map((agg) => ({
@@ -72,16 +97,6 @@ export default function LivePage() {
 
     return Array.from(countryMap.values());
   }, [byCountry, aggregates]);
-
-  // Mock recent votes from aggregates (last 10)
-  const recentVotes = React.useMemo(() => {
-    return aggregates.slice(0, 10).map((agg) => ({
-      id: `${agg.candidate_id}-${Date.now()}`,
-      candidateName: agg.candidate_name,
-      country: null,
-      timestamp: timestamp,
-    }));
-  }, [aggregates, timestamp]);
 
   const stats = React.useMemo(() => ({
     totalVotes,
@@ -155,7 +170,16 @@ export default function LivePage() {
       </div>
 
       {/* Live Ticker */}
-      {recentVotes.length > 0 && <LiveTicker items={recentVotes} />}
+      {!loadingRecent && recentVotes.length > 0 && (
+        <LiveTicker 
+          items={recentVotes.map(vote => ({
+            id: vote.id,
+            candidateName: vote.candidate_name,
+            country: vote.country,
+            timestamp: vote.timestamp,
+          }))} 
+        />
+      )}
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 space-y-8">
