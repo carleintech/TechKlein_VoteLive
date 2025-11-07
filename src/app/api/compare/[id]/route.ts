@@ -29,11 +29,28 @@ export async function GET(
     }
 
     // Get stats
-    const { data: stats } = await supabase
+    const { data: stats, error: statsError } = await supabase
       .from('vote_aggregates')
       .select('*')
       .eq('candidate_id', candidateId)
       .single();
+
+    if (statsError) {
+      console.log('Stats error for candidate', candidateId, ':', statsError);
+    }
+
+    // If no stats in vote_aggregates, try getting directly from votes table
+    let candidateVotes = (stats as any)?.total_votes || 0;
+    
+    if (!stats || candidateVotes === 0) {
+      const { count } = await supabase
+        .from('votes')
+        .select('*', { count: 'exact', head: true })
+        .eq('candidate_id', candidateId);
+      
+      candidateVotes = count || 0;
+      console.log('Direct count for candidate', candidateId, ':', candidateVotes);
+    }
 
     // Get by country
     const { data: byCountry } = await supabase
@@ -47,16 +64,33 @@ export async function GET(
       .from('vote_aggregates')
       .select('total_votes');
     
-    const totalVotes = allCandidates?.reduce((sum: number, c: any) => sum + (c.total_votes || 0), 0) || 1;
-    const candidateVotes = (stats as any)?.total_votes || 0;
-    const percentage = (candidateVotes / totalVotes) * 100;
+    let totalVotes = allCandidates?.reduce((sum: number, c: any) => sum + (c.total_votes || 0), 0) || 0;
+    
+    // If vote_aggregates is empty, count from votes table
+    if (totalVotes === 0) {
+      const { count } = await supabase
+        .from('votes')
+        .select('*', { count: 'exact', head: true });
+      
+      totalVotes = count || 1;
+      console.log('Total votes from direct count:', totalVotes);
+    }
+    
+    const percentage = totalVotes > 0 ? (candidateVotes / totalVotes) * 100 : 0;
 
     // Format top countries
     const topCountries = (byCountry || []).map((c: any) => ({
       country: c.country_name || c.country || 'Unknown',
       votes: c.total_votes || 0,
-      percentage: ((c.total_votes || 0) / candidateVotes) * 100,
+      percentage: candidateVotes > 0 ? ((c.total_votes || 0) / candidateVotes) * 100 : 0,
     }));
+
+    console.log('Compare API Response for candidate', candidateId, ':', {
+      candidateVotes,
+      totalVotes,
+      percentage,
+      countryCount: byCountry?.length || 0,
+    });
 
     return NextResponse.json({
       id: candidateId,
