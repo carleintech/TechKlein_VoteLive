@@ -396,55 +396,64 @@ export default function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white mt-16">
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <footer className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white mt-20">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
+        <div className="relative container mx-auto px-4 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {/* About */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="text-2xl">🇭🇹</div>
-                <h3 className="font-bold text-xl bg-gradient-to-r from-[#006CFF] to-[#7F00FF] bg-clip-text text-transparent">HaitiVote</h3>
+            <div className="space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="text-3xl">🇭🇹</div>
+                <h3 className="font-bold text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">HaitiVote</h3>
               </div>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-gray-300 leading-relaxed text-base">
                 Platfòm sondaj transparan pou eleksyon Ayiti 2025-2026. 
                 Bati ak teknoloji modèn pou sekirite ak presizyon maksimòm.
               </p>
-              <p className="text-sm text-gray-500 italic">"Yon Pèp. Yon Vwa. Yon Sondaj."</p>
+              <p className="text-base text-blue-300 font-semibold italic">"Yon Pèp. Yon Vwa. Yon Sondaj."</p>
             </div>
 
             {/* Links */}
-            <div className="space-y-4">
-              <h3 className="font-bold text-lg">Lyen Rapid</h3>
-              <div className="flex flex-col gap-3 text-sm">
-                <Link href="/about" className="text-gray-400 hover:text-[#006CFF] transition-colors flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4" />
+            <div className="space-y-5">
+              <h3 className="font-bold text-xl text-blue-300">Lyen Rapid</h3>
+              <div className="flex flex-col gap-3.5">
+            {/* Links */}
+            <div className="space-y-5">
+              <h3 className="font-bold text-xl text-blue-300">Lyen Rapid</h3>
+              <div className="flex flex-col gap-3.5">
+                <Link href="/about" className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   Sou Nou
                 </Link>
-                <Link href="/live" className="text-gray-400 hover:text-[#006CFF] transition-colors flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4" />
+                <Link href="/live" className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   Rezilta an Tan Reyèl
                 </Link>
-                <Link href="/vote" className="text-gray-400 hover:text-[#006CFF] transition-colors flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4" />
+                <Link href="/vote" className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   Vote Kounye a
                 </Link>
-                <Link href="/press" className="text-gray-400 hover:text-[#7F00FF] transition-colors flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4" />
+                <Link href="/press" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   Kit Medya
+                </Link>
+                <Link href="/embed" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Widget Embed
                 </Link>
               </div>
             </div>
 
             {/* Contact */}
-            <div className="space-y-4">
-              <h3 className="font-bold text-lg">Kontak</h3>
-              <p className="text-gray-400 text-sm">
+            <div className="space-y-5">
+              <h3 className="font-bold text-xl text-blue-300">Kontak</h3>
+              <p className="text-gray-300 text-base font-medium">
                 Pou kesyon oswa sipò teknolojik:
               </p>
-              <p className="text-sm">
+              <p className="text-base">
                 <a 
                   href="mailto:info@techklein.com" 
-                  className="text-[#006CFF] hover:text-[#7F00FF] hover:underline transition-colors"
+                  className="text-blue-400 hover:text-purple-400 hover:underline transition-colors font-semibold"
                 >
                   info@techklein.com
                 </a>
@@ -452,16 +461,16 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-8 pt-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-              <p>
+          <div className="border-t border-gray-700/50 mt-12 pt-10">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-base">
+              <p className="text-gray-300 font-medium">
                 © {new Date().getFullYear()} HaitiVote. Tout dwa rezève.
               </p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-gray-300 font-medium">
                 <span>Bati ak</span>
-                <span className="text-red-500">❤️</span>
+                <span className="text-red-400 text-xl">❤️</span>
                 <span>pou Ayiti</span>
-                <span className="text-2xl">🇭🇹</span>
+                <span className="text-3xl">🇭🇹</span>
               </div>
             </div>
           </div>
