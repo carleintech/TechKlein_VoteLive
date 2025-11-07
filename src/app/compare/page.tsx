@@ -268,7 +268,7 @@ export default function ComparePage() {
                     {candidate.photo_url ? (
                       <Image
                         src={candidate.photo_url}
-                        alt={candidate.name}
+                        alt={candidate.name || 'Candidate'}
                         width={120}
                         height={120}
                         className="w-28 h-28 rounded-full object-cover mx-auto border-4 border-[#006CFF]"
@@ -276,7 +276,7 @@ export default function ComparePage() {
                     ) : (
                       <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#006CFF] to-[#7F00FF] flex items-center justify-center mx-auto border-4 border-[#006CFF]">
                         <span className="text-4xl font-bold text-white">
-                          {candidate.name.charAt(0)}
+                          {candidate.name?.charAt(0) || '?'}
                         </span>
                       </div>
                     )}
