@@ -43,18 +43,7 @@ async function getCandidateData(slug: string) {
     `)
     .eq('slug', slug)
     .eq('is_active', true)
-    .single<{
-      id: number;
-      name: string;
-      slug: string;
-      photo_url: string;
-      party: string | null;
-      motto: string | null;
-      is_active: boolean;
-      created_at: string;
-      updated_at: string;
-      candidate_meta: Array<any> | null;
-    }>();
+    .single();
 
   if (candidateError || !candidate) {
     return null;
@@ -65,7 +54,7 @@ async function getCandidateData(slug: string) {
     .from('vote_aggregates')
     .select('*')
     .eq('candidate_slug', slug)
-    .single<{ candidate_id: number; candidate_name: string; candidate_slug: string; photo_url: string; total_votes: number; percentage: number }>();
+    .single();
 
   // Fetch votes by country for this candidate
   const { data: byCountry } = await (supabase as any)
@@ -73,7 +62,7 @@ async function getCandidateData(slug: string) {
     .select('*')
     .eq('candidate_slug', slug)
     .order('total_votes', { ascending: false })
-    .limit(10) as { data: Array<{ country: string; candidate_slug: string; candidate_name: string; total_votes: number }> | null };
+    .limit(10);
 
   return {
     candidate,
