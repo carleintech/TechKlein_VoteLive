@@ -32,6 +32,12 @@ import {
   ArrowRight,
   Sparkles,
   Info,
+  Activity,
+  Zap,
+  GitCompare,
+  Trophy,
+  MapPin,
+  Clock,
 } from 'lucide-react';
 import { formatNumber } from '@/lib/utils';
 
@@ -123,6 +129,12 @@ export default function HomePage() {
               </p>
 
               <div className="flex flex-wrap gap-3 justify-center lg:justify-start pt-4">
+                <Link href="/live">
+                  <Button size="lg" className="bg-white text-[#006CFF] hover:bg-blue-50">
+                    <BarChart3 className="h-5 w-5 mr-2" />
+                    Rezilta Live
+                  </Button>
+                </Link>
                 <Link href="/about">
                   <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm">
                     <Info className="h-5 w-5 mr-2" />
@@ -261,6 +273,146 @@ export default function HomePage() {
                   </p>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Analytics & Tools Section */}
+            <div className="space-y-6 pt-12">
+              <div className="text-center space-y-3">
+                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#006CFF] to-[#7F00FF] bg-clip-text text-transparent">
+                  Eksplorè Rezilta yo
+                </h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  Analize done yo, swiv tendans, konpare kandida yo, ak eksperyans plis fonksyon
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Activity Feed */}
+                <Link href="/activity">
+                  <Card className="h-full border-2 border-transparent hover:border-blue-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Activity className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Aktivite Live</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Gade vòt k ap rantre an tan reyèl. Swiv mouvman nan tout peyi yo.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-blue-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Gade Aktivite</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Trends & Predictions */}
+                <Link href="/trends">
+                  <Card className="h-full border-2 border-transparent hover:border-purple-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <TrendingUp className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Tendans</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Analize tendans semèn lan, prediksyon, ak estatistik avanse.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-purple-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Eksplorè Tendans</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Leaderboard */}
+                <Link href="/leaderboard">
+                  <Card className="h-full border-2 border-transparent hover:border-yellow-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Trophy className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Klasman</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Wè klasman konplè ak estatistik detaye pou chak kandida.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-yellow-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Gade Klasman</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Compare Candidates */}
+                <Link href="/compare">
+                  <Card className="h-full border-2 border-transparent hover:border-green-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <GitCompare className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Konpare</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Konpare 2 kandida kote kote ak grafik detaye.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-green-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Konpare Kandida</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Challenge Feature */}
+                <Link href="/challenge">
+                  <Card className="h-full border-2 border-transparent hover:border-red-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Zap className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Batay Kandida</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Chwazi kandida ou nan yon konpetisyon rapid. Ki moun ki pral genyen?
+                        </p>
+                      </div>
+                      <div className="flex items-center text-red-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Jwe Batay</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Media Kit */}
+                <Link href="/press">
+                  <Card className="h-full border-2 border-transparent hover:border-indigo-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Users className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Kit Medya</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Telechaje logo, banner, ak tout resous pou pibliye.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-indigo-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Kit Medya</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
             </div>
           </div>
         )}
@@ -427,9 +579,25 @@ export default function HomePage() {
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   Rezilta an Tan Reyèl
                 </Link>
-                <Link href="/vote" className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                <Link href="/leaderboard" className="text-gray-300 hover:text-yellow-400 transition-colors flex items-center gap-2 text-base font-medium group">
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  Vote Kounye a
+                  Klasman
+                </Link>
+                <Link href="/activity" className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Aktivite
+                </Link>
+                <Link href="/trends" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Tendans
+                </Link>
+                <Link href="/compare" className="text-gray-300 hover:text-green-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Konpare
+                </Link>
+                <Link href="/challenge" className="text-gray-300 hover:text-red-400 transition-colors flex items-center gap-2 text-base font-medium group">
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Batay
                 </Link>
                 <Link href="/press" className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2 text-base font-medium group">
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
