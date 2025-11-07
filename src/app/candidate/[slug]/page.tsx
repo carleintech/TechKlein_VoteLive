@@ -336,7 +336,8 @@ export default async function CandidatePage({ params }: CandidatePageProps) {
 }
 
 export async function generateMetadata({ params }: CandidatePageProps) {
-  const data = await getCandidateData(params.slug);
+  const { slug } = await params;
+  const data = await getCandidateData(slug);
 
   if (!data) {
     return {
