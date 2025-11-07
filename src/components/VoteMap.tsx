@@ -31,8 +31,8 @@ function MapUpdater({ data }: { data: CountryData[] }) {
 
   React.useEffect(() => {
     if (data.length > 0) {
-      const bounds = data.map((d) => [d.lat, d.lng] as LatLngExpression);
-      map.fitBounds(bounds, { padding: [50, 50] });
+      const bounds = data.map((d) => [d.lat, d.lng] as [number, number]);
+      map.fitBounds(bounds as any, { padding: [50, 50] });
     }
   }, [data, map]);
 
