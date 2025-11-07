@@ -35,7 +35,7 @@ async function getCandidateData(slug: string) {
   const supabase = await createClient();
 
   // Fetch candidate details
-  const { data: candidate, error: candidateError } = await supabase
+  const { data: candidate, error: candidateError } = await (supabase as any)
     .from('candidates')
     .select(`
       *,
@@ -61,14 +61,14 @@ async function getCandidateData(slug: string) {
   }
 
   // Fetch vote stats for this candidate
-  const { data: stats } = await supabase
+  const { data: stats } = await (supabase as any)
     .from('vote_aggregates')
     .select('*')
     .eq('candidate_slug', slug)
     .single<{ candidate_id: number; candidate_name: string; candidate_slug: string; photo_url: string; total_votes: number; percentage: number }>();
 
   // Fetch votes by country for this candidate
-  const { data: byCountry } = await supabase
+  const { data: byCountry } = await (supabase as any)
     .from('vote_by_country')
     .select('*')
     .eq('candidate_slug', slug)

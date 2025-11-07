@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const supabase = await createClient();
 
-  const { data: candidate } = await supabase
+  const { data: candidate } = await (supabase as any)
     .from('candidates')
     .select('name, photo_url')
     .eq('slug', slug)
@@ -75,12 +75,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${candidate.name} - Estatistik | HaitiVote`,
-    description: `Wè estatistik detaye pou ${candidate.name} nan sondaj HaitiVote 2025-2026.`,
+    title: `${(candidate as any).name} - Estatistik | HaitiVote`,
+    description: `Wè estatistik detaye pou ${(candidate as any).name} nan sondaj HaitiVote 2025-2026.`,
     openGraph: {
-      title: `${candidate.name} - Estatistik`,
-      description: `Estatistik detaye pou ${candidate.name}`,
-      images: candidate.photo_url ? [candidate.photo_url] : [],
+      title: `${(candidate as any).name} - Estatistik`,
+      description: `Estatistik detaye pou ${(candidate as any).name}`,
+      images: (candidate as any).photo_url ? [(candidate as any).photo_url] : [],
     },
   };
 }
@@ -89,7 +89,7 @@ async function getCandidateData(slug: string) {
   const supabase = await createClient();
 
   // Get candidate info
-  const { data: candidate, error: candidateError } = await supabase
+  const { data: candidate, error: candidateError } = await (supabase as any)
     .from('candidates')
     .select('*')
     .eq('slug', slug)
@@ -100,23 +100,23 @@ async function getCandidateData(slug: string) {
   }
 
   // Get vote statistics from vote_aggregates view
-  const { data: aggregates } = await supabase
+  const { data: aggregates } = await (supabase as any)
     .from('vote_aggregates')
     .select('*')
     .order('total_votes', { ascending: false });
 
   const candidateAggregate = aggregates?.find(
-    (a) => a.candidate_id === candidate.id
+    (a: any) => a.candidate_id === candidate.id
   );
 
   const voteStats: VoteStats = {
     total_votes: candidateAggregate?.total_votes || 0,
     percentage: candidateAggregate?.percentage || 0,
-    rank: aggregates?.findIndex((a) => a.candidate_id === candidate.id) + 1 || 0,
+    rank: aggregates?.findIndex((a: any) => a.candidate_id === candidate.id) + 1 || 0,
   };
 
   // Get votes by country
-  const { data: countryVotes } = await supabase
+  const { data: countryVotes } = await (supabase as any)
     .from('votes')
     .select('country, region')
     .eq('candidate_id', candidate.id)
@@ -125,7 +125,7 @@ async function getCandidateData(slug: string) {
   // Process country and region data
   const countryMap = new Map<string, { total: number; regions: Map<string, number> }>();
 
-  countryVotes?.forEach((vote) => {
+  countryVotes?.forEach((vote: any) => {
     const country = vote.country || 'Unknown';
     const region = vote.region || 'Unknown';
 
