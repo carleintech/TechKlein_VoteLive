@@ -146,26 +146,25 @@ export default function VotePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F7FA]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <Link href="/" className="font-semibold tracking-tight text-neutral-900">
-            <span className="text-neutral-900">TechKlein</span>{" "}
+      <header className="sticky top-0 z-20 border-b-2 border-gray-200 bg-white/90 backdrop-blur-xl shadow-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          <Link href="/" className="text-2xl font-bold tracking-tight">
             <span className="bg-gradient-to-r from-[#006CFF] to-[#7F00FF] bg-clip-text text-transparent">
-              VoteLive
+              HaitiVote
             </span>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {step !== 'select' && step !== 'success' && (
-              <Button variant="ghost" onClick={handleReset} className="gap-2">
-                <ArrowLeft size={16} />
-                Rekòmanse
+              <Button variant="outline" onClick={handleReset} className="gap-2 border-2 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                <ArrowLeft size={18} />
+                <span className="font-semibold">Rekòmanse</span>
               </Button>
             )}
             <Link
               href="/live"
-              className="text-sm font-medium text-neutral-600 hover:text-neutral-900"
+              className="text-base font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 rounded-lg hover:bg-blue-50"
             >
               Rezilta LIVE
             </Link>
@@ -174,18 +173,18 @@ export default function VotePage() {
       </header>
 
       {/* Progress Bar */}
-      <div className="border-b border-neutral-200 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-4">
-          <div className="mb-2 flex items-center justify-between text-sm">
-            <span className="font-medium text-neutral-900">
-              {step === 'select' && 'Chwazi Kandida'}
-              {step === 'details' && 'Enfòmasyon'}
-              {step === 'otp' && 'Verifikasyon'}
-              {step === 'success' && 'Konplete!'}
+      <div className="border-b-2 border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+        <div className="mx-auto max-w-6xl px-4 py-5">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              {step === 'select' && '1. Chwazi Kandida'}
+              {step === 'details' && '2. Enfòmasyon'}
+              {step === 'otp' && '3. Verifikasyon'}
+              {step === 'success' && '✓ Konplete!'}
             </span>
-            <span className="text-neutral-600">{progressMap[step]}%</span>
+            <span className="text-base font-bold text-gray-700">{progressMap[step]}%</span>
           </div>
-          <Progress value={progressMap[step]} className="h-2" />
+          <Progress value={progressMap[step]} className="h-3 shadow-sm" />
         </div>
       </div>
 
@@ -200,12 +199,12 @@ export default function VotePage() {
 
         {/* Step 1: Select Candidate */}
         {step === 'select' && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h1 className="text-3xl font-bold text-neutral-900">
+          <div className="space-y-8">
+            <div className="text-center space-y-3">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Chwazi kandida ou
               </h1>
-              <p className="mt-2 text-neutral-600">
+              <p className="text-lg text-gray-700 font-medium max-w-2xl mx-auto">
                 Klike sou yon kandida pou wè pwofi li epi vote pou li
               </p>
             </div>
@@ -231,19 +230,21 @@ export default function VotePage() {
 
             {/* Selection Info */}
             {selectedCandidateId && (
-              <Card className="mx-auto max-w-md border-[#006CFF] bg-blue-50">
+              <Card className="mx-auto max-w-md border-2 border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 shadow-xl">
                 <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <CheckCircle2 className="text-[#006CFF]" size={24} />
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full">
+                        <CheckCircle2 className="text-white" size={28} />
+                      </div>
                       <div>
-                        <p className="font-medium text-neutral-900">Kandida chwazi</p>
-                        <p className="text-sm text-neutral-600">{candidateName}</p>
+                        <p className="text-lg font-bold text-gray-900">Kandida chwazi</p>
+                        <p className="text-base font-semibold text-gray-700">{candidateName}</p>
                       </div>
                     </div>
                     <Button
                       onClick={() => handleCandidateSelect(selectedCandidateId, candidateName)}
-                      className="bg-gradient-to-r from-[#006CFF] to-[#7F00FF]"
+                      className="bg-gradient-to-r from-[#006CFF] to-[#7F00FF] hover:shadow-lg transition-all h-12 px-6 text-base font-bold"
                     >
                       Kontinye
                     </Button>
@@ -256,22 +257,26 @@ export default function VotePage() {
 
         {/* Step 2: User Details Form */}
         {step === 'details' && selectedCandidateId && (
-          <div className="mx-auto max-w-2xl space-y-6">
-            <div className="text-center">
-              <h1 className="text-3xl font-bold text-neutral-900">
+          <div className="mx-auto max-w-2xl space-y-8">
+            <div className="text-center space-y-3">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Enfòmasyon ou
               </h1>
-              <p className="mt-2 text-neutral-600">
+              <p className="text-lg text-gray-700 font-medium">
                 Ranpli enfòmasyon ou pou verifye vòt ou
               </p>
             </div>
 
             {/* Selected Candidate Info */}
-            <Card className="border-[#006CFF]/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Vote size={20} className="text-[#006CFF]" />
-                  Vòt pou: {candidateName}
+            <Card className="border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full">
+                    <Vote size={22} className="text-white" />
+                  </div>
+                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Vòt pou: {candidateName}
+                  </span>
                 </CardTitle>
               </CardHeader>
             </Card>
@@ -288,15 +293,15 @@ export default function VotePage() {
 
         {/* Step 3: OTP Verification */}
         {step === 'otp' && voteData && (
-          <div className="mx-auto max-w-md space-y-6">
-            <div className="text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#006CFF] to-[#7F00FF]">
-                <Shield className="text-white" size={32} />
+          <div className="mx-auto max-w-md space-y-8">
+            <div className="text-center space-y-4">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#006CFF] to-[#7F00FF] shadow-xl">
+                <Shield className="text-white" size={40} />
               </div>
-              <h1 className="text-3xl font-bold text-neutral-900">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Verifikasyon Kòd
               </h1>
-              <p className="mt-2 text-neutral-600">
+              <p className="text-lg text-gray-700 font-medium">
                 Nou voye yon kòd 6 chif nan nimewo {voteData.phone}
               </p>
             </div>
@@ -313,10 +318,10 @@ export default function VotePage() {
 
             <div className="text-center">
               <Button
-                variant="link"
+                variant="outline"
                 onClick={() => setStep('details')}
                 disabled={loading}
-                className="text-neutral-600"
+                className="border-2 hover:border-blue-500 hover:bg-blue-50 font-semibold transition-all"
               >
                 Chanje nimewo telefòn
               </Button>
