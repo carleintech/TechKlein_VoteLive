@@ -43,7 +43,18 @@ async function getCandidateData(slug: string) {
     `)
     .eq('slug', slug)
     .eq('is_active', true)
-    .single();
+    .single<{
+      id: number;
+      name: string;
+      slug: string;
+      photo_url: string;
+      party: string | null;
+      motto: string | null;
+      is_active: boolean;
+      created_at: string;
+      updated_at: string;
+      candidate_meta: Array<any> | null;
+    }>();
 
   if (candidateError || !candidate) {
     return null;
