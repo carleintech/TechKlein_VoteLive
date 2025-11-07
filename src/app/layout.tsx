@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -17,13 +17,19 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  themeColor: '#1F41FF',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: 'TechKlein VoteLive – Sondaj Ayiti Global',
   description: 'Global Haitian pre-election poll platform. Vote securely from anywhere in the world.',
   keywords: ['Haiti', 'election', 'vote', 'poll', 'sondaj', 'TechKlein'],
   authors: [{ name: 'TechKlein' }],
   manifest: '/manifest.json',
-  themeColor: '#1F41FF',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

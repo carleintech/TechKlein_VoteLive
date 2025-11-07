@@ -3,6 +3,8 @@
  * Shown when user is offline
  */
 
+'use client';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { WifiOff } from 'lucide-react';
