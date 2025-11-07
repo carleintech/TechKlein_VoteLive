@@ -150,10 +150,8 @@ export default function VotePage() {
       {/* Header */}
       <header className="sticky top-0 z-20 border-b-2 border-gray-200 bg-white/90 backdrop-blur-xl shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <Link href="/" className="text-2xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-[#006CFF] to-[#7F00FF] bg-clip-text text-transparent">
-              HaitiVote
-            </span>
+          <Link href="/" className="flex items-center">
+            <img src="/haitivote-logo.svg" alt="HaitiVote" className="h-10" />
           </Link>
           <div className="flex items-center gap-4">
             {step !== 'select' && step !== 'success' && (

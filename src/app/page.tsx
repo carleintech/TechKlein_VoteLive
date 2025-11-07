@@ -62,12 +62,9 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <div className="text-2xl">🇭🇹</div>
-                <span className="text-xl font-bold bg-gradient-to-r from-[#006CFF] to-[#7F00FF] bg-clip-text text-transparent">
-                  HaitiVote
-                </span>
-              </div>
+              <Link href="/" className="flex items-center">
+                <img src="/haitivote-logo.svg" alt="HaitiVote" className="h-10" />
+              </Link>
               <div className="hidden md:flex items-center gap-4">
                 <Link href="/about" className="text-sm font-medium text-gray-700 hover:text-[#006CFF] transition-colors">
                   Sou Nou

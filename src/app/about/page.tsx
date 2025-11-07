@@ -28,9 +28,8 @@ export default function AboutPage() {
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-[#006CFF] hover:text-[#7F00FF] transition-colors">
-              <ArrowLeft className="h-5 w-5" />
-              <span className="font-semibold">Tounen lakay</span>
+            <Link href="/" className="flex items-center">
+              <img src="/haitivote-logo.svg" alt="HaitiVote" className="h-10" />
             </Link>
             <div className="flex gap-3">
               <Link href="/vote">
