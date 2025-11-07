@@ -31,7 +31,7 @@ export async function GET(
       query = query.eq('slug', identifier);
     }
 
-    const { data: candidate, error } = await query.maybeSingle();
+    const { data: candidate, error } = await query.maybeSingle<Candidate>();
 
     if (error || !candidate) {
       return NextResponse.json(
