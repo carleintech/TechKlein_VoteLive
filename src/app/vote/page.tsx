@@ -58,6 +58,8 @@ export default function VotePage() {
     setError(null);
 
     try {
+      console.log('Form submission data:', { ...data, phone: '***' });
+      
       // Send OTP
       const response = await fetch('/api/otp/send', {
         method: 'POST',
@@ -73,6 +75,9 @@ export default function VotePage() {
         throw new Error(errorData.error || 'Failed to send OTP');
       }
 
+      const otpResponse = await response.json();
+      console.log('OTP sent successfully:', otpResponse);
+
       // Store form data and move to OTP step
       setVoteData(data);
       setStep('otp');
@@ -85,20 +90,17 @@ export default function VotePage() {
 
   // Handle OTP verification and vote submission
   const handleOtpVerify = async (code: string) => {
-    if (!voteData) return;
+    if (!voteData) {
+      setError('Vote data not found. Please start over.');
+      return;
+    }
 
     setLoading(true);
     setError(null);
 
-    console.log('Starting OTP verification with voteData:', {
-      hasName: !!voteData.name,
-      hasDob: !!voteData.dob,
-      hasPhone: !!voteData.phone,
-      hasCandidateId: !!selectedCandidateId,
-      voteData: { ...voteData, phone: '***' },
-    });
-
     try {
+      console.log('Starting OTP verification...');
+      
       // Verify OTP
       const verifyResponse = await fetch('/api/otp/verify', {
         method: 'POST',
@@ -114,34 +116,38 @@ export default function VotePage() {
         throw new Error(errorData.error || 'Invalid OTP code');
       }
 
-      const { otpHash } = await verifyResponse.json();
+      const verifyResult = await verifyResponse.json();
+      console.log('OTP verified successfully');
+
+      if (!verifyResult.otpHash) {
+        throw new Error('OTP verification failed - no hash returned');
+      }
 
       // Split name into firstName and lastName
       const nameParts = voteData.name.trim().split(/\s+/);
       const firstName = nameParts[0];
       const lastName = nameParts.slice(1).join(' ') || nameParts[0];
 
-      console.log('Submitting vote with:', {
+      const submitPayload = {
         candidateId: selectedCandidateId,
         firstName,
         lastName,
         dateOfBirth: voteData.dob,
         phone: voteData.phone,
-        otpHash: otpHash ? 'present' : 'missing',
+        otpHash: verifyResult.otpHash,
+      };
+
+      console.log('Submitting vote with:', {
+        ...submitPayload,
+        phone: '***',
+        otpHash: '***',
       });
 
       // Submit vote
       const submitResponse = await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          candidateId: selectedCandidateId,
-          firstName,
-          lastName,
-          dateOfBirth: voteData.dob,
-          phone: voteData.phone,
-          otpHash,
-        }),
+        body: JSON.stringify(submitPayload),
       });
 
       if (!submitResponse.ok) {
@@ -151,9 +157,12 @@ export default function VotePage() {
       }
 
       const result = await submitResponse.json();
-      setVoteReceiptId(result.receiptId);
+      console.log('Vote submitted successfully:', result);
+      
+      setVoteReceiptId(result.voteId || result.receiptId);
       setStep('success');
     } catch (err) {
+      console.error('Error in handleOtpVerify:', err);
       setError(err instanceof Error ? err.message : 'Failed to verify OTP');
     } finally {
       setLoading(false);

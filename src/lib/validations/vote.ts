@@ -34,7 +34,7 @@ export const voteSubmissionSchema = z.object({
     .int('ID kandida dwe yon nonm antye')
     .positive('Chwazi yon kandida'),
   
-  country: z.string().min(1, 'Chwazi peyi ou').optional().or(z.literal('')),
+  country: z.string().optional().or(z.literal('')),
   
   region: z.string().optional().or(z.literal('')),
   

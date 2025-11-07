@@ -27,18 +27,18 @@ export async function POST(request: Request) {
     const { candidateId, firstName, lastName, dateOfBirth, phone, otpHash } = body;
 
     // Log received data for debugging
-    console.log('Vote submission received:', {
+    console.log('✅ Vote submission received:', {
       candidateId,
       firstName,
       lastName,
       dateOfBirth,
-      phone: phone ? '***' : undefined,
-      otpHash: otpHash ? 'present' : undefined,
+      phone: phone ? `***${phone.slice(-4)}` : undefined,
+      otpHash: otpHash ? '***' : undefined,
     });
 
     // Validate required fields
     if (!candidateId || !firstName || !lastName || !dateOfBirth || !phone || !otpHash) {
-      console.error('Missing required fields:', {
+      console.error('❌ Missing required fields:', {
         candidateId: !!candidateId,
         firstName: !!firstName,
         lastName: !!lastName,
@@ -47,7 +47,17 @@ export async function POST(request: Request) {
         otpHash: !!otpHash,
       });
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { 
+          error: 'Missing required fields',
+          details: {
+            candidateId: !!candidateId,
+            firstName: !!firstName,
+            lastName: !!lastName,
+            dateOfBirth: !!dateOfBirth,
+            phone: !!phone,
+            otpHash: !!otpHash,
+          }
+        },
         { status: 400 }
       );
     }
