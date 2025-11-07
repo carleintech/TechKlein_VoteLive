@@ -59,6 +59,12 @@ export async function POST(request: Request) {
     // Hash the provided code
     const otpHash = hashOtpCode(code);
 
+    console.log('🔍 Verifying OTP:', {
+      phone: normalizedPhone,
+      codeLength: code.length,
+      hashGenerated: !!otpHash,
+    });
+
     // Find matching OTP
     const admin = getAdminClient();
     const { data: otpRecord, error: otpError } = await admin
@@ -71,6 +77,12 @@ export async function POST(request: Request) {
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
+
+    console.log('🔍 OTP lookup result:', {
+      found: !!otpRecord,
+      error: otpError?.message,
+      phone: normalizedPhone,
+    });
 
     if (otpError || !otpRecord) {
       // Log failed attempt

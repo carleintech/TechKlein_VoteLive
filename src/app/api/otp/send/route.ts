@@ -62,6 +62,12 @@ export async function POST(request: Request) {
     const otpCode = generateOtpCode();
     const otpHash = hashOtpCode(otpCode);
 
+    console.log('📤 Sending OTP:', {
+      phone: normalizedPhone,
+      otpCode: process.env.NODE_ENV === 'development' ? otpCode : '***',
+      hashGenerated: !!otpHash,
+    });
+
     // Store OTP in database
     const admin = getAdminClient();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
@@ -77,12 +83,14 @@ export async function POST(request: Request) {
       });
 
     if (insertError) {
-      console.error('Error storing OTP:', insertError);
+      console.error('❌ Error storing OTP:', insertError);
       return NextResponse.json(
         { error: 'Failed to generate OTP. Please try again.' },
         { status: 500 }
       );
     }
+
+    console.log('✅ OTP stored successfully in database');
 
     // Generate message in requested language
     const message = generateOtpMessage(otpCode, language);
