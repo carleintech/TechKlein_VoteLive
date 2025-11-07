@@ -74,26 +74,48 @@ export function useVoteFlow(): UseVoteFlowResult {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/submit', {
+        console.log('🔵 Submitting vote - Step 1: Send OTP');
+        console.log('Form data:', { ...data, phone: '***' });
+
+        // Step 1: Send OTP
+        const otpResponse = await fetch('/api/otp/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            phone: data.phone,
+            language: data.language || 'ht',
+          }),
         });
 
-        const result = await response.json();
+        const otpResult = await otpResponse.json();
 
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to submit vote');
+        if (!otpResponse.ok) {
+          throw new Error(otpResult.error || 'Failed to send OTP');
         }
 
-        // Update state with submission data
+        console.log('✅ OTP sent successfully');
+
+        // Split name into firstName and lastName
+        const nameParts = data.name.trim().split(/\s+/);
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ') || nameParts[0];
+
+        // Store metadata for OTP verification
         setState((prev) => ({
           ...prev,
           step: 'otp',
-          submissionId: result.submissionId,
-          candidateId: result.candidate.id,
-          metadata: result.metadata,
-          expiresAt: result.expiresAt,
+          candidateId: data.candidateId,
+          metadata: {
+            normalizedName: data.name,
+            dob: data.dob,
+            phoneE164: data.phone,
+            country: data.country || null,
+            region: data.region || null,
+            mediaCode: data.mediaCode || null,
+            firstName,
+            lastName,
+          } as any,
+          expiresAt: otpResult.expiresAt,
         }));
 
         toast({
@@ -118,7 +140,7 @@ export function useVoteFlow(): UseVoteFlowResult {
 
   const verifyOtp = useCallback(
     async (code: string) => {
-      if (!state.submissionId || !state.candidateId || !state.metadata) {
+      if (!state.candidateId || !state.metadata) {
         toast({
           variant: 'destructive',
           title: 'Erè',
@@ -131,30 +153,68 @@ export function useVoteFlow(): UseVoteFlowResult {
         setLoading(true);
         setError(null);
 
-        const payload: OtpVerificationInput = {
-          code,
-          submissionId: state.submissionId,
-          candidateId: state.candidateId,
-          metadata: state.metadata,
-        };
+        console.log('🔵 Verifying OTP - Step 2');
 
-        const response = await fetch('/api/otp/verify', {
+        // Step 2: Verify OTP and get hash
+        const verifyResponse = await fetch('/api/otp/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({
+            phone: state.metadata.phoneE164,
+            code,
+          }),
         });
 
-        const result = await response.json();
+        const verifyResult = await verifyResponse.json();
 
-        if (!response.ok) {
-          throw new Error(result.error || 'Verification failed');
+        if (!verifyResponse.ok) {
+          throw new Error(verifyResult.error || 'Invalid OTP code');
         }
+
+        console.log('✅ OTP verified successfully');
+
+        if (!verifyResult.otpHash) {
+          throw new Error('OTP verification failed - no hash returned');
+        }
+
+        // Step 3: Submit vote with OTP hash
+        console.log('🔵 Submitting vote - Step 3');
+
+        const metadata = state.metadata as any;
+        const submitPayload = {
+          candidateId: state.candidateId,
+          firstName: metadata.firstName,
+          lastName: metadata.lastName,
+          dateOfBirth: metadata.dob,
+          phone: metadata.phoneE164,
+          otpHash: verifyResult.otpHash,
+        };
+
+        console.log('Submit payload:', {
+          ...submitPayload,
+          phone: '***',
+          otpHash: '***',
+        });
+
+        const submitResponse = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(submitPayload),
+        });
+
+        const submitResult = await submitResponse.json();
+
+        if (!submitResponse.ok) {
+          throw new Error(submitResult.error || 'Failed to submit vote');
+        }
+
+        console.log('✅ Vote submitted successfully');
 
         // Success!
         setState((prev) => ({
           ...prev,
           step: 'success',
-          voteId: result.voteId,
+          voteId: submitResult.voteId,
         }));
 
         toast({
@@ -164,6 +224,7 @@ export function useVoteFlow(): UseVoteFlowResult {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Verification failed';
         setError(errorMessage);
+        console.error('❌ Error:', errorMessage);
         
         toast({
           variant: 'destructive',
@@ -174,7 +235,7 @@ export function useVoteFlow(): UseVoteFlowResult {
         setLoading(false);
       }
     },
-    [state.submissionId, state.candidateId, state.metadata, toast]
+    [state.candidateId, state.metadata, toast]
   );
 
   const resendOtp = useCallback(async () => {
