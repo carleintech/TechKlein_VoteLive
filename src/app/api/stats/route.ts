@@ -38,12 +38,57 @@ export async function GET() {
       .select('candidate_id, candidate_name, candidate_slug, photo_url, total_votes, percentage')
       .order('total_votes', { ascending: false });
 
-    if (statsError) {
-      console.error('Error fetching candidate stats:', statsError);
-      return NextResponse.json(
-        { error: 'Failed to fetch statistics' },
-        { status: 500 }
-      );
+    let candidateDistribution: any[] = [];
+
+    // If vote_aggregates is empty or has error, fallback to counting from votes table directly
+    if (statsError || !candidateStats || candidateStats.length === 0) {
+      console.log('vote_aggregates empty or error, falling back to votes table');
+      
+      // Get all candidates
+      const { data: candidates } = await supabase
+        .from('candidates')
+        .select('id, name, slug, photo_url');
+
+      // Count votes for each candidate
+      const { data: allVotes } = await supabase
+        .from('votes')
+        .select('candidate_id');
+
+      if (candidates && allVotes) {
+        const voteCounts: Record<number, number> = {};
+        allVotes.forEach((vote: any) => {
+          voteCounts[vote.candidate_id] = (voteCounts[vote.candidate_id] || 0) + 1;
+        });
+
+        const totalVotesCount = allVotes.length;
+
+        candidateDistribution = candidates
+          .map((candidate: any) => {
+            const votes = voteCounts[candidate.id] || 0;
+            const percentage = totalVotesCount > 0 ? ((votes / totalVotesCount) * 100).toFixed(2) : '0.00';
+            
+            return {
+              candidateId: candidate.id,
+              candidateName: candidate.name,
+              partyAffiliation: null,
+              photoUrl: candidate.photo_url,
+              votes: votes,
+              percentage: percentage,
+            };
+          })
+          .filter((c: any) => c.votes > 0) // Only include candidates with votes
+          .sort((a: any, b: any) => b.votes - a.votes);
+      }
+    } else {
+      // Use vote_aggregates data
+      candidateDistribution = candidateStats.map((stat: any) => ({
+        candidateId: stat.candidate_id,
+        candidateName: stat.candidate_name,
+        partyAffiliation: null,
+        photoUrl: stat.photo_url,
+        votes: stat.total_votes,
+        percentage: stat.percentage?.toFixed(2) || '0.00',
+      }));
     }
 
     // Get country distribution
@@ -73,15 +118,11 @@ export async function GET() {
       .slice(0, 10)
       .map(([country, votes]) => ({ country, votes }));
 
-    // Calculate percentages for candidate stats
-    const candidateDistribution = candidateStats?.map((stat: any) => ({
-      candidateId: stat.candidate_id,
-      candidateName: stat.candidate_name,
-      partyAffiliation: null, // Not available in vote_aggregates view
-      photoUrl: stat.photo_url,
-      votes: stat.total_votes,
-      percentage: stat.percentage || '0.00',
-    })) || [];
+    console.log('Stats API Response:', {
+      totalVotes: totalVotes || 0,
+      candidatesCount: candidateDistribution.length,
+      countriesCount: topCountries.length,
+    });
 
     return NextResponse.json({
       success: true,
