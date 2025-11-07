@@ -433,6 +433,27 @@ export default function HomePage() {
                     </CardContent>
                   </Card>
                 </Link>
+
+                {/* World Map */}
+                <Link href="/map">
+                  <Card className="h-full border-2 border-transparent hover:border-emerald-500/50 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Globe className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">Kat Mondyal</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Kat entèaktif avèk vòt pa peyi nan mond antye.
+                        </p>
+                      </div>
+                      <div className="flex items-center text-emerald-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                        <span>Wè Kat</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               </div>
             </div>
           </div>
