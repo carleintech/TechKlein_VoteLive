@@ -301,7 +301,7 @@ export default function HomePage() {
             </div>
 
             <OtpInput
-              phoneNumber={formData.phone}
+              phoneNumber={state.metadata.phoneE164 || ''}
               expiresAt={new Date(Date.now() + 10 * 60 * 1000).toISOString()}
               onVerify={verifyOtp}
               onResend={async () => {
