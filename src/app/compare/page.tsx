@@ -286,7 +286,7 @@ export default function ComparePage() {
                         {candidate.name}
                       </h3>
                       <Badge className="bg-gradient-to-r from-[#006CFF] to-[#7F00FF] text-white">
-                        {candidate.percentage.toFixed(1)}%
+                        {candidate.percentage?.toFixed(1) || '0.0'}%
                       </Badge>
                     </div>
 
@@ -362,11 +362,11 @@ export default function ComparePage() {
                             {candidate.name}
                           </span>
                           <span className="text-lg font-bold text-[#006CFF]">
-                            {candidate.percentage.toFixed(2)}%
+                            {candidate.percentage?.toFixed(2) || '0.00'}%
                           </span>
                         </div>
                         <Progress
-                          value={candidate.percentage}
+                          value={candidate.percentage || 0}
                           className="h-3"
                         />
                       </div>
@@ -423,10 +423,10 @@ export default function ComparePage() {
                                   {country.country}
                                 </span>
                                 <span className="text-sm font-bold text-gray-900">
-                                  {formatNumber(country.votes)} ({country.percentage.toFixed(1)}%)
+                                  {formatNumber(country.votes)} ({country.percentage?.toFixed(1) || '0.0'}%)
                                 </span>
                               </div>
-                              <Progress value={country.percentage} className="h-2" />
+                              <Progress value={country.percentage || 0} className="h-2" />
                             </div>
                           </div>
                         ))}
