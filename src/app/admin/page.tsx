@@ -39,6 +39,12 @@ export default function AdminDashboard() {
       setLoading(true);
       const response = await fetch('/api/admin/stats');
       
+      if (response.status === 401 || response.status === 403) {
+        // Not authenticated, redirect to login
+        router.push('/admin/login');
+        return;
+      }
+      
       if (!response.ok) {
         throw new Error('Failed to fetch stats');
       }
@@ -47,6 +53,8 @@ export default function AdminDashboard() {
       setStats(data);
     } catch (error) {
       console.error('Stats fetch error:', error);
+      // On error, also try redirecting to login
+      router.push('/admin/login');
     } finally {
       setLoading(false);
     }
