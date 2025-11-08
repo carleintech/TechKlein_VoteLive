@@ -153,7 +153,7 @@ export async function POST(request: Request) {
     }
 
     const admin = getAdminClient();
-    const supabase = await createClient();
+    const supabase = getAdminClient();
 
     // Verify OTP was validated for this phone or email
     let otpQuery = (admin as any)
