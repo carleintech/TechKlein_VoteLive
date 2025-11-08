@@ -107,24 +107,35 @@ export async function POST(request: Request) {
     }
 
     const admin = getAdminClient();
-    const supabase = getAdminClient();
 
     // Check if candidate exists and is active
-    const { data: candidate, error: candidateError } = await supabase
+    console.log('🔵 Checking candidate:', candidateId);
+    const { data: candidate, error: candidateError } = await admin
       .from('candidates')
       .select('id, is_active')
       .eq('id', candidateId)
       .maybeSingle();
 
-    if (candidateError || !candidate || !(candidate as any).is_active) {
+    if (candidateError) {
+      console.error('❌ Candidate check error:', candidateError);
+      return NextResponse.json(
+        { error: 'Database error checking candidate', details: candidateError.message },
+        { status: 500 }
+      );
+    }
+
+    if (!candidate || !(candidate as any).is_active) {
+      console.error('❌ Invalid or inactive candidate:', candidateId);
       return NextResponse.json(
         { error: 'Invalid candidate' },
         { status: 400 }
       );
     }
+    console.log('✅ Candidate valid');
 
     // Check for duplicate vote (same normalized name + DOB)
-    const { data: existingVote } = await (admin as any)
+    console.log('🔵 Checking for duplicate vote...');
+    const { data: existingVote, error: duplicateCheckError } = await (admin as any)
       .from('private_voter_records')
       .select('id')
       .eq('normalized_first_name', normalizedFirstName)
@@ -132,7 +143,13 @@ export async function POST(request: Request) {
       .eq('date_of_birth', dateOfBirth)
       .maybeSingle();
 
+    if (duplicateCheckError) {
+      console.error('❌ Duplicate check error:', duplicateCheckError);
+      // Continue anyway - we'll catch duplicates on insert
+    }
+
     if (existingVote) {
+      console.log('❌ Duplicate vote detected');
       return NextResponse.json(
         { 
           error: 'You have already voted. Each person can only vote once.',
@@ -141,6 +158,7 @@ export async function POST(request: Request) {
         { status: 409 }
       );
     }
+    console.log('✅ No duplicate found');
 
     // Submit vote - Insert voter record and vote
     const voterId = crypto.randomUUID();
@@ -150,6 +168,7 @@ export async function POST(request: Request) {
     // Using a placeholder value based on name+dob hash to maintain uniqueness
     const phoneePlaceholder = `placeholder_${Buffer.from(`${normalizedFirstName}${normalizedLastName}${dateOfBirth}`).toString('base64').substring(0, 15)}`;
     
+    console.log('🔵 Inserting voter record...');
     const { error: voterError } = await (admin as any)
       .from('private_voter_records')
       .insert({
@@ -164,7 +183,7 @@ export async function POST(request: Request) {
       });
 
     if (voterError) {
-      console.error('Error creating voter record:', voterError);
+      console.error('❌ Error creating voter record:', voterError);
       if (voterError.code === '23505') { // Unique constraint violation
         return NextResponse.json(
           {
@@ -175,13 +194,15 @@ export async function POST(request: Request) {
         );
       }
       return NextResponse.json(
-        { error: 'Failed to submit vote. Please try again.' },
+        { error: 'Failed to submit vote. Please try again.', details: voterError.message },
         { status: 500 }
       );
     }
+    console.log('✅ Voter record created');
 
     // Insert into public.votes
-    const { data: voteResult, error: voteError } = await supabase
+    console.log('🔵 Inserting vote...');
+    const { data: voteResult, error: voteError } = await admin
       .from('votes')
       // @ts-expect-error - votes table insert type mismatch
       .insert({
@@ -192,7 +213,7 @@ export async function POST(request: Request) {
       .single();
 
     if (voteError) {
-      console.error('Error submitting vote:', voteError);
+      console.error('❌ Error submitting vote:', voteError);
       
       // Check if it's a duplicate vote error
       if (voteError.message.includes('duplicate') || voteError.message.includes('already voted')) {
@@ -206,10 +227,11 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json(
-        { error: 'Failed to submit vote. Please try again.' },
+        { error: 'Failed to submit vote. Please try again.', details: voteError.message },
         { status: 500 }
       );
     }
+    console.log('✅ Vote inserted successfully');
 
     return NextResponse.json({
       success: true,
