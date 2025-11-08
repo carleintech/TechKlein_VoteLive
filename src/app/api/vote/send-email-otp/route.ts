@@ -128,8 +128,9 @@ export async function POST(request: NextRequest) {
       await sendEmailOTP(email, code);
     } catch (emailError) {
       console.error('Email send error:', emailError);
+      const errorMessage = emailError instanceof Error ? emailError.message : 'Failed to send verification email';
       return NextResponse.json(
-        { error: 'Failed to send verification email' },
+        { error: errorMessage, details: String(emailError) },
         { status: 500 }
       );
     }
