@@ -16,16 +16,17 @@ export async function GET(request: NextRequest) {
     const events: any[] = [];
 
     // Get first vote (launch)
-    const { data: firstVote } = await (supabase as any)
+    const { data: firstVoteData, error: firstVoteError } = await (supabase as any)
       .from('votes')
       .select('created_at, candidates(name, photo_url)')
       .order('created_at', { ascending: true })
       .limit(1)
       .single();
 
-    if (firstVote) {
+    if (firstVoteData && !firstVoteError) {
+      const firstVote: any = firstVoteData;
       events.push({
-        date: (firstVote as any).created_at,
+        date: firstVote.created_at,
         type: 'launch',
         title: 'Lanse TechKlein VoteLive',
         description: 'Premye vòt soumèt nan platfòm lan',
@@ -51,9 +52,9 @@ export async function GET(request: NextRequest) {
           .range(milestone - 1, milestone - 1);
 
         if (milestoneVotes && milestoneVotes.length > 0) {
-          const milestoneVote = milestoneVotes[0];
+          const milestoneVote: any = milestoneVotes[0];
           events.push({
-            date: (milestoneVote as any).created_at,
+            date: milestoneVote.created_at,
             type: 'milestone',
             title: `${formatNumber(milestone)} Vòt!`,
             description: `Platfòm lan rive ${formatNumber(milestone)} vòt total`,
