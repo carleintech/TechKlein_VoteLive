@@ -58,10 +58,9 @@ export default function VotePage() {
     setError(null);
 
     try {
-      const verificationMethod = data.verificationMethod || (data.email ? 'email' : 'phone');
+      const verificationMethod = 'email';
       console.log('Form submission data:', { 
         ...data, 
-        phone: data.phone ? '***' : undefined,
         email: data.email ? '***' : undefined,
         verificationMethod 
       });
