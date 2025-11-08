@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Info, Lock, Mail } from 'lucide-react';
+import { Info, Lock } from 'lucide-react';
 
 interface VotingFormProps {
   candidateId: number;
@@ -171,8 +171,8 @@ export function VotingForm({
           <Alert className="border-2 border-blue-200 bg-blue-50">
             <Lock className="h-5 w-5 text-blue-600" />
             <AlertDescription className="text-sm font-medium text-gray-900">
-              <strong>Enfòmasyon prive:</strong> Nou kolekte non, dat nesans, ak email ou sèlman pou evite vòt doub. 
-              Enfòmasyon sa yo pa pral pibliye. Yon kòd verifikasyon pral voye sou email ou.
+              <strong>Enfòmasyon prive:</strong> Nou kolekte non ak dat nesans ou sèlman pou evite vòt doub. 
+              Enfòmasyon sa yo pa pral pibliye.
             </AlertDescription>
           </Alert>
 
@@ -185,14 +185,14 @@ export function VotingForm({
             loading={loading}
             disabled={loading}
           >
-            {loading ? 'Ap voye kòd...' : 'Voye Kòd Email'}
+            {loading ? 'Ap soumèt vòt ou...' : 'Soumèt Vòt Mwen'}
           </Button>
 
           {/* Info */}
           <Alert className="border-2 border-purple-200 bg-purple-50">
             <Info className="h-5 w-5 text-purple-600" />
             <AlertDescription className="text-sm font-medium text-gray-900">
-              Apre ou ranpli fòm sa, n ap voye yon kòd 6 chif sou email ou pou verifye.
+              Lè w klike sou bouton an, vòt ou pral konte imedyatman.
             </AlertDescription>
           </Alert>
         </form>
