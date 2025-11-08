@@ -122,11 +122,11 @@ export default function VotePage() {
       console.log('Starting OTP verification...');
       
       // Verify OTP
-      const verifyResponse = await fetch('/api/otp/verify', {
+      const verifyResponse = await fetch('/api/vote/verify-email-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          phone: voteData.phone,
+          email: voteData.email,
           code,
         }),
       });
@@ -143,23 +143,20 @@ export default function VotePage() {
         throw new Error('OTP verification failed - no hash returned');
       }
 
-      // Split name into firstName and lastName
-      const nameParts = voteData.name.trim().split(/\s+/);
-      const firstName = nameParts[0];
-      const lastName = nameParts.slice(1).join(' ') || nameParts[0];
-
       const submitPayload = {
         candidateId: selectedCandidateId,
-        firstName,
-        lastName,
+        firstName: voteData.firstName,
+        lastName: voteData.lastName,
         dateOfBirth: voteData.dob,
-        phone: voteData.phone,
+        email: voteData.email,
+        country: voteData.country,
         otpHash: verifyResult.otpHash,
+        verificationMethod: 'email' as const,
       };
 
       console.log('Submitting vote with:', {
         ...submitPayload,
-        phone: '***',
+        email: '***',
         otpHash: '***',
       });
 
@@ -359,12 +356,12 @@ export default function VotePage() {
               <p className="text-lg text-gray-700 font-medium">
                 {(voteData as any).verificationMethod === 'email' 
                   ? `Nou voye yon kòd 6 chif sou email ${voteData.email}`
-                  : `Nou voye yon kòd 6 chif nan nimewo ${voteData.phone}`}
+                  : `Nou voye yon kòd 6 chif nan email ${voteData.email}`}
               </p>
             </div>
 
             <OtpInput
-              phoneNumber={voteData.phone || voteData.email || ''}
+              phoneNumber={voteData.email || ''}
               expiresAt={new Date(Date.now() + 10 * 60 * 1000).toISOString()}
               onVerify={handleOtpVerify}
               onResend={async () => {
