@@ -8,7 +8,7 @@
 TRUNCATE TABLE public.candidate_meta CASCADE;
 TRUNCATE TABLE public.candidates RESTART IDENTITY CASCADE;
 
--- Insert all 47 candidates
+-- Insert all 48 candidates (47 original + Guy Philippe)
 INSERT INTO public.candidates (name, slug, photo_url, party, motto) VALUES
 ('Jude Célestin', 'jude-celestin', 'https://avpgqqpsgswmpermjopm.supabase.co/storage/v1/object/public/candidates/jude-celestin.jpg', 'LAPEH', 'Stability Through Experience'),
 ('Jocelerme Privert', 'jocelerme-privert', 'https://avpgqqpsgswmpermjopm.supabase.co/storage/v1/object/public/candidates/jocelerme-privert.jpg', 'Independent', 'Unity and Progress'),
@@ -56,7 +56,8 @@ INSERT INTO public.candidates (name, slug, photo_url, party, motto) VALUES
 ('Wilner Valcin', 'wilner-valcin', 'https://avpgqqpsgswmpermjopm.supabase.co/storage/v1/object/public/candidates/wilner-valcin.jpg', 'Independent', NULL),
 ('Evaliè̀re Beauplan', 'evaliere-beauplan', 'https://avpgqqpsgswmpermjopm.supabase.co/storage/v1/object/public/candidates/evaliere-beauplan.jpg', 'Independent', 'Women Leading Change'),
 ('Commissaire Jean Ernst Muscadin', 'commissaire-jean-ernst-muscadin', 'https://avpgqqpsgswmpermjopm.supabase.co/storage/v1/object/public/candidates/commissaire-jean-ernst-muscadin.jpg', 'Independent', 'Law and Order'),
-('Michel Soukar', 'michel-soukar', 'https://avpgqqpsgswmpermjopm.supabase.co/storage/v1/object/public/candidates/michel-soukar.jpg', 'Independent', NULL);
+('Michel Soukar', 'michel-soukar', 'https://avpgqqpsgswmpermjopm.supabase.co/storage/v1/object/public/candidates/michel-soukar.jpg', 'Independent', NULL),
+('Guy Philippe', 'guy-philippe', 'https://avpgqqpsgswmpermjopm.supabase.co/storage/v1/object/public/candidates/guy-philippe.jpg', 'Independent', NULL);
 
 -- Verify the count
 DO $$
@@ -66,7 +67,7 @@ BEGIN
   SELECT COUNT(*) INTO candidate_count FROM public.candidates;
   RAISE NOTICE 'Successfully inserted % candidates', candidate_count;
   
-  IF candidate_count != 47 THEN
-    RAISE EXCEPTION 'Expected 47 candidates but found %', candidate_count;
+  IF candidate_count != 48 THEN
+    RAISE EXCEPTION 'Expected 48 candidates but found %', candidate_count;
   END IF;
 END $$;
