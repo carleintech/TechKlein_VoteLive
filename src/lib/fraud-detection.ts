@@ -8,7 +8,7 @@ type FraudSeverity = 'low' | 'medium' | 'high';
 
 interface FraudCheckParams {
   ipAddress: string;
-  phoneE164: string;
+  phoneE164?: string;
   normalizedName?: string;
   dob?: string;
   deviceFingerprint?: string;
@@ -67,7 +67,7 @@ export async function checkFraudActivity(
   }
   
   // Check 5: Suspicious phone number pattern
-  if (isSuspiciousPhonePattern(params.phoneE164)) {
+  if (params.phoneE164 && isSuspiciousPhonePattern(params.phoneE164)) {
     reasons.push('Suspicious phone pattern');
     score += 15;
   }

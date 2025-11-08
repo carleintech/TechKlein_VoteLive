@@ -128,7 +128,7 @@ export async function POST(request: Request) {
     // Check for fraud
     const fraudCheck = await checkFraudActivity({
       ipAddress: clientIp,
-      phoneE164: normalizedPhone || undefined,
+      phoneE164: normalizedPhone,
       normalizedName: `${normalizedFirstName} ${normalizedLastName}`,
       dob: dateOfBirth,
     });
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
         eventType: 'vote_submission',
         severity: fraudCheck.score > 7 ? 'high' : 'medium',
         ipAddress: clientIp,
-        phoneE164: normalizedPhone || undefined,
+        phoneE164: normalizedPhone,
         deviceFingerprint: userAgent,
         details: { reasons: fraudCheck.reasons },
       });
