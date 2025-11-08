@@ -275,9 +275,9 @@ export async function POST(request: Request) {
     }
 
     // Insert into public.votes
-    // @ts-ignore - votes table insert
     const { data: voteData, error: voteError } = await supabase
       .from('votes')
+      // @ts-expect-error - votes table insert type mismatch
       .insert({
         candidate_id: candidateId,
         country: body.country,
