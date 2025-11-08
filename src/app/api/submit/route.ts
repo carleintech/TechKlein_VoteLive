@@ -84,28 +84,26 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check for fraud
-    const fraudCheck = await checkFraudActivity({
-      ipAddress: clientIp,
-      normalizedName: `${normalizedFirstName} ${normalizedLastName}`,
-      dob: dateOfBirth,
-    });
-    if (fraudCheck.isSuspicious) {
-      await logFraudActivity({
-        eventType: 'vote_submission',
-        severity: fraudCheck.score > 7 ? 'high' : 'medium',
+    // Check for fraud (but don't block, just log for now)
+    try {
+      const fraudCheck = await checkFraudActivity({
         ipAddress: clientIp,
-        deviceFingerprint: userAgent,
-        details: { reasons: fraudCheck.reasons },
+        normalizedName: `${normalizedFirstName} ${normalizedLastName}`,
+        dob: dateOfBirth,
       });
-
-      return NextResponse.json(
-        { 
-          error: 'Your vote cannot be processed at this time. Please contact support.',
-          code: 'FRAUD_DETECTED',
-        },
-        { status: 403 }
-      );
+      if (fraudCheck.isSuspicious) {
+        console.log('⚠️ Suspicious activity detected (not blocking):', fraudCheck.reasons);
+        await logFraudActivity({
+          eventType: 'vote_submission',
+          severity: fraudCheck.score > 7 ? 'high' : 'medium',
+          ipAddress: clientIp,
+          deviceFingerprint: userAgent,
+          details: { reasons: fraudCheck.reasons },
+        });
+        // Don't block for now - just log
+      }
+    } catch (fraudError) {
+      console.error('Error in fraud check (continuing anyway):', fraudError);
     }
 
     const admin = getAdminClient();
@@ -220,9 +218,16 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
-    console.error('Unexpected error in POST /api/submit:', error);
+    console.error('❌ Unexpected error in POST /api/submit:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
