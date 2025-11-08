@@ -44,32 +44,15 @@ export async function checkFraudActivity(
     score += 30;
   }
   
-  // Check 2: Same phone, multiple OTP attempts
-  // @ts-ignore - private schema access via admin client
-  const { data: otpAttempts } = await supabase.schema('private')
-    .from('otps')
-    .select('id, created_at, attempts')
-    .eq('phone_e164', params.phoneE164)
-    .gte('created_at', new Date(Date.now() - 3600000).toISOString());
-  
-  if (otpAttempts && otpAttempts.length >= 3) {
-    reasons.push('Multiple OTP attempts');
-    score += 25;
-  }
-  
-  // Check 3: Rapid submission (less than 30 seconds to complete)
-  // This would be checked in the API route with timestamp tracking
-  
-  // Check 4: VPN/Proxy detection (basic check)
+  // Check 2: VPN/Proxy detection (basic check)
   if (await isVpnOrProxy(params.ipAddress)) {
     reasons.push('VPN/Proxy detected');
     score += 20;
   }
   
-  // Check 5: Suspicious phone number pattern
-  if (params.phoneE164 && isSuspiciousPhonePattern(params.phoneE164)) {
-    reasons.push('Suspicious phone pattern');
-    score += 15;
+  // Check 3: Duplicate name + DOB combination (already handled in submit route)
+  if (params.normalizedName && params.dob) {
+    // This is checked separately in the submit route
   }
   
   // Determine severity
