@@ -21,7 +21,7 @@ async function sendEmailOTP(email: string, code: string) {
   
   // Production: Send via Resend
   const { data, error } = await resend.emails.send({
-    from: 'VoteLive <noreply@haitivote.org>',
+    from: 'VoteLive <onboarding@resend.dev>',
     to: email,
     subject: 'Kòd Verifikasyon VoteLive - Your Verification Code',
     html: `

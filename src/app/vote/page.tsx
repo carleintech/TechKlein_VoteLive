@@ -385,9 +385,7 @@ export default function VotePage() {
                 disabled={loading}
                 className="border-2 hover:border-blue-500 hover:bg-blue-50 font-semibold transition-all"
               >
-                {(voteData as any).verificationMethod === 'email' 
-                  ? 'Chanje email'
-                  : 'Chanje nimewo telefòn'}
+                Chanje email
               </Button>
             </div>
           </div>

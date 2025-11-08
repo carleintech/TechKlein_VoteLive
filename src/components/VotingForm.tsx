@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Info, Lock, Mail, Phone } from 'lucide-react';
+import { Info, Lock, Mail } from 'lucide-react';
 
 interface VotingFormProps {
   candidateId: number;
@@ -38,7 +38,6 @@ export function VotingForm({
   loading,
 }: VotingFormProps) {
   const { countries } = useCountries();
-  const [verificationMethod, setVerificationMethod] = React.useState<'phone' | 'email'>('email'); // Default to email (easier)
   
   type FormData = Omit<VoteSubmissionInput, 'language'> & { language?: 'ht' | 'fr' | 'en' | 'es'; email?: string };
   
@@ -63,8 +62,8 @@ export function VotingForm({
     await onSubmit({
       ...data,
       language: data.language || 'ht',
-      verificationMethod,
-    } as VoteSubmissionInput & { verificationMethod: 'phone' | 'email' });
+      verificationMethod: 'email',
+    } as VoteSubmissionInput & { verificationMethod: 'email' });
   };
 
   return (
@@ -79,21 +78,37 @@ export function VotingForm({
       </CardHeader>
 
       <CardContent className="pt-6">
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">{/* Full Name */}
-          {/* Full Name */}
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-base font-semibold">
-              Non Konplè <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="name"
-              {...register('name')}
-              placeholder="Antre non konplè w"
-              error={!!errors.name}
-              helperText={errors.name?.message}
-              disabled={loading}
-              className="h-12 text-base"
-            />
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
+          {/* First Name and Last Name */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName" className="text-base font-semibold">
+                Prenon <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="firstName"
+                {...register('firstName')}
+                placeholder="Prenon"
+                error={!!errors.firstName}
+                helperText={errors.firstName?.message}
+                disabled={loading}
+                className="h-12 text-base"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName" className="text-base font-semibold">
+                Siyati <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="lastName"
+                {...register('lastName')}
+                placeholder="Siyati"
+                error={!!errors.lastName}
+                helperText={errors.lastName?.message}
+                disabled={loading}
+                className="h-12 text-base"
+              />
+            </div>
           </div>
 
           {/* Date of Birth */}
@@ -113,42 +128,8 @@ export function VotingForm({
             />
           </div>
 
-          {/* Verification Method Toggle */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">
-              Metòd Verifikasyon <span className="text-destructive">*</span>
-            </Label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setVerificationMethod('email')}
-                className={`flex items-center justify-center gap-2 h-14 rounded-lg border-2 transition-all font-semibold ${
-                  verificationMethod === 'email'
-                    ? 'border-blue-600 bg-blue-50 text-blue-700'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-                }`}
-              >
-                <Mail className="h-5 w-5" />
-                Email
-              </button>
-              <button
-                type="button"
-                onClick={() => setVerificationMethod('phone')}
-                className={`flex items-center justify-center gap-2 h-14 rounded-lg border-2 transition-all font-semibold ${
-                  verificationMethod === 'phone'
-                    ? 'border-blue-600 bg-blue-50 text-blue-700'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-                }`}
-              >
-                <Phone className="h-5 w-5" />
-                Telefòn (SMS)
-              </button>
-            </div>
-          </div>
-
-          {/* Email OR Phone (based on selection) */}
-          {verificationMethod === 'email' ? (
-            <div className="space-y-2">
+          {/* Email Field */}
+          <div className="space-y-2">
               <Label htmlFor="email" className="text-base font-semibold">
                 Adrès Email <span className="text-destructive">*</span>
               </Label>
@@ -167,27 +148,6 @@ export function VotingForm({
                 Nou pral voye yon kòd verifikasyon sou email sa a
               </p>
             </div>
-          ) : (
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-base font-semibold">
-                Nimewo Telefòn <span className="text-destructive">*</span>
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                {...register('phone')}
-                placeholder="+509XXXXXXXX oswa lòt"
-                error={!!errors.phone}
-                helperText={errors.phone?.message}
-                disabled={loading}
-                className="h-12 text-base"
-              />
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                Nou pral voye yon kòd verifikasyon sou telefòn sa (SMS)
-              </p>
-            </div>
-          )}
 
           {/* Country */}
           <div className="space-y-2">
@@ -232,8 +192,8 @@ export function VotingForm({
           <Alert className="border-2 border-blue-200 bg-blue-50">
             <Lock className="h-5 w-5 text-blue-600" />
             <AlertDescription className="text-sm font-medium text-gray-900">
-              <strong>Enfòmasyon prive:</strong> Nou kolekte non, dat nesans, ak {verificationMethod === 'email' ? 'email' : 'telefòn'} ou sèlman pou evite vòt doub. 
-              Enfòmasyon sa yo pa pral pibliye. Yon kòd verifikasyon pral voye {verificationMethod === 'email' ? 'sou email ou' : 'sou telefòn ou'}.
+              <strong>Enfòmasyon prive:</strong> Nou kolekte non, dat nesans, ak email ou sèlman pou evite vòt doub. 
+              Enfòmasyon sa yo pa pral pibliye. Yon kòd verifikasyon pral voye sou email ou.
             </AlertDescription>
           </Alert>
 
@@ -246,14 +206,14 @@ export function VotingForm({
             loading={loading}
             disabled={loading}
           >
-            {loading ? 'Ap voye kòd...' : `Voye Kòd ${verificationMethod === 'email' ? 'Email' : 'SMS'}`}
+            {loading ? 'Ap voye kòd...' : 'Voye Kòd Email'}
           </Button>
 
           {/* Info */}
           <Alert className="border-2 border-purple-200 bg-purple-50">
             <Info className="h-5 w-5 text-purple-600" />
             <AlertDescription className="text-sm font-medium text-gray-900">
-              Apre ou ranpli fòm sa, n ap voye yon kòd 6 chif {verificationMethod === 'email' ? 'sou email ou' : 'sou telefòn ou'} pou verifye.
+              Apre ou ranpli fòm sa, n ap voye yon kòd 6 chif sou email ou pou verifye.
             </AlertDescription>
           </Alert>
         </form>

@@ -196,7 +196,7 @@ export default function HomePage() {
                     <h3 className="font-bold text-lg text-gray-900 mb-2">Etap 1 sou 3: Chwazi Kandida Ou</h3>
                     <p className="text-gray-700">
                       Chwazi kandida ou pami <strong>{candidates.length} kandida ofisyèl</strong>. 
-                      Apre sa, w ap ranpli enfòmasyon w epi konfime vòt ou ak yon kòd SMS.
+                      Apre sa, w ap ranpli enfòmasyon w epi konfime vòt ou ak yon kòd email.
                     </p>
                   </div>
                 </div>
@@ -247,7 +247,7 @@ export default function HomePage() {
                   </div>
                   <h3 className="font-bold text-xl text-gray-900">100% Sekirite</h3>
                   <p className="text-gray-600 leading-relaxed">
-                    Yon vòt pa telefòn. Sistèm anti-doub avanse. Verifikasyon SMS obligatwa.
+                    Yon vòt pa email. Sistèm anti-doub avanse. Verifikasyon email obligatwa.
                   </p>
                 </CardContent>
               </Card>
@@ -723,7 +723,7 @@ export default function HomePage() {
                 onClick={() => goToStep('details')}
                 disabled={loading}
               >
-                Chanje nimewo telefòn
+                Chanje email
               </Button>
             </div>
           </div>

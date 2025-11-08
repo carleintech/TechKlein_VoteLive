@@ -234,7 +234,7 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-5 gap-6">
             {[
               { step: '1', title: 'Antre enfòmasyon ou', desc: 'Non, dat nesans, peyi ak vil rezidans', icon: '📝' },
-              { step: '2', title: 'Verifye nimewo telefòn ou', desc: 'Ou resevwa yon mesaj tèks (OTP)', icon: '📱' },
+              { step: '2', title: 'Verifye adrès email ou', desc: 'Ou resevwa yon kòd verifikasyon (OTP)', icon: '📧' },
               { step: '3', title: 'Chwazi kandida ou prefere', desc: 'Chak kandida gen foto, non, ak kat klè', icon: '✅' },
               { step: '4', title: 'Soumèt vot ou', desc: 'Vot ou anrejistre, kripte, epi konte imedyatman', icon: '🗳️' },
               { step: '5', title: 'Wè rezilta live', desc: 'Dashboard la aktyalize an tan reyèl', icon: '📊' },

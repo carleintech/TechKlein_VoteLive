@@ -194,7 +194,7 @@ export default function HowToVotePage() {
                 <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
                   <Phone className="h-6 w-6 text-purple-600 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="text-lg font-semibold text-gray-900">Nimewo Telefòn</p>
+                    <p className="text-lg font-semibold text-gray-900">Adrès Email</p>
                     <p className="text-gray-600">Ak kòd peyi (Egzanp: +509 1234 5678)</p>
                   </div>
                 </div>
@@ -220,8 +220,8 @@ export default function HowToVotePage() {
                   <span className="text-3xl font-bold text-green-600">3</span>
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-white">Verifikasyon Telefòn</h3>
-                  <p className="text-green-100 text-lg mt-1">Twazyèm etap: Konfime nimewo telefòn ou</p>
+                  <h3 className="text-3xl font-bold text-white">Verifikasyon Email</h3>
+                  <p className="text-green-100 text-lg mt-1">Twazyèm etap: Konfime adrès email ou</p>
                 </div>
               </div>
             </div>
@@ -231,8 +231,8 @@ export default function HowToVotePage() {
                 <div className="flex items-start gap-4">
                   <MessageSquare className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="text-lg font-semibold text-gray-900">Resevwa SMS</p>
-                    <p className="text-gray-600">Yon kòd 6 chif ap voyé ba w nan nimewo telefòn ou te bay la</p>
+                    <p className="text-lg font-semibold text-gray-900">Resevwa Email</p>
+                    <p className="text-gray-600">Yon kòd 6 chif ap voyé ba w nan adrès email ou te bay la</p>
                   </div>
                 </div>
 
@@ -330,12 +330,22 @@ export default function HowToVotePage() {
 
               <div className="border-b border-gray-200 pb-6">
                 <h4 className="text-xl font-semibold text-gray-900 mb-2">Èske m ka vote plizyè fwa?</h4>
-                <p className="text-gray-700">Non, chak nimewo telefòn ka vote 1 sèl fwa pou garanti jestikal.</p>
+                <p className="text-gray-700">Non, chak email ka vote 1 sèl fwa pou garanti jestikal.</p>
               </div>
 
               <div className="border-b border-gray-200 pb-6">
                 <h4 className="text-xl font-semibold text-gray-900 mb-2">Èske enfòmasyon mwen an sekirite?</h4>
                 <p className="text-gray-700">Wi, tout enfòmasyon yo kripte epi prive. Nou pa pataje yo ak pèsonn.</p>
+              </div>
+
+              <div className="border-b border-gray-200 pb-6">
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">Mwen pa resevwa kòd verifikasyon an?</h4>
+                <p className="text-gray-700">
+                  <strong>Verifye dosye spam/junk ou</strong>. Kòd la ka rive la. Verifye tou ke adrès email ou kòrèk.
+                </p>
+                <p className="text-gray-600 text-sm mt-2">
+                  <strong>Check your spam/junk folder</strong>. The code might be there. Also verify that your email address is correct.
+                </p>
               </div>
 
               <div className="border-b border-gray-200 pb-6">

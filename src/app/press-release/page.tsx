@@ -175,7 +175,7 @@ export default function PressReleasePage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <MessageSquare className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
-                  <span><strong>Twilio</strong> for SMS verification</span>
+                  <span><strong>Resend</strong> for email verification</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Lock className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />

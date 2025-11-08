@@ -17,14 +17,16 @@ interface SubmitVoteRequest {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-  phone: string;
+  phone?: string;
+  email?: string;
   otpHash: string;
+  verificationMethod: 'phone' | 'email';
 }
 
 export async function POST(request: Request) {
   try {
     const body: SubmitVoteRequest = await request.json();
-    const { candidateId, firstName, lastName, dateOfBirth, phone, otpHash } = body;
+    const { candidateId, firstName, lastName, dateOfBirth, phone, email, otpHash, verificationMethod } = body;
 
     // Log received data for debugging
     console.log('✅ Vote submission received:', {
@@ -33,18 +35,22 @@ export async function POST(request: Request) {
       lastName,
       dateOfBirth,
       phone: phone ? `***${phone.slice(-4)}` : undefined,
+      email: email ? '***' : undefined,
       otpHash: otpHash ? '***' : undefined,
+      verificationMethod,
     });
 
     // Validate required fields
-    if (!candidateId || !firstName || !lastName || !dateOfBirth || !phone || !otpHash) {
+    if (!candidateId || !firstName || !lastName || !dateOfBirth || (!phone && !email) || !otpHash || !verificationMethod) {
       console.error('❌ Missing required fields:', {
         candidateId: !!candidateId,
         firstName: !!firstName,
         lastName: !!lastName,
         dateOfBirth: !!dateOfBirth,
         phone: !!phone,
+        email: !!email,
         otpHash: !!otpHash,
+        verificationMethod: !!verificationMethod,
       });
       return NextResponse.json(
         { 
@@ -55,7 +61,9 @@ export async function POST(request: Request) {
             lastName: !!lastName,
             dateOfBirth: !!dateOfBirth,
             phone: !!phone,
+            email: !!email,
             otpHash: !!otpHash,
+            verificationMethod: !!verificationMethod,
           }
         },
         { status: 400 }
@@ -80,19 +88,34 @@ export async function POST(request: Request) {
       );
     }
 
-    // Parse and validate phone number
-    const phoneResult = parseAndValidatePhone(phone);
-    if (!phoneResult.valid || !phoneResult.e164) {
-      return NextResponse.json(
-        { error: 'Invalid phone number format' },
-        { status: 400 }
-      );
+    // Parse and validate identifier based on verification method
+    let normalizedPhone: string | null = null;
+    let normalizedEmail: string | null = null;
+
+    if (verificationMethod === 'phone') {
+      const phoneResult = parseAndValidatePhone(phone!);
+      if (!phoneResult.valid || !phoneResult.e164) {
+        return NextResponse.json(
+          { error: 'Invalid phone number format' },
+          { status: 400 }
+        );
+      }
+      normalizedPhone = phoneResult.e164;
+    } else {
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email!)) {
+        return NextResponse.json(
+          { error: 'Invalid email format' },
+          { status: 400 }
+        );
+      }
+      normalizedEmail = email!.toLowerCase();
     }
 
     // Normalize data
     const normalizedFirstName = normalizeName(firstName);
     const normalizedLastName = normalizeName(lastName);
-    const normalizedPhone = phoneResult.e164;
 
     // Validate date of birth
     if (!validateDateOfBirth(dateOfBirth)) {
@@ -105,7 +128,7 @@ export async function POST(request: Request) {
     // Check for fraud
     const fraudCheck = await checkFraudActivity({
       ipAddress: clientIp,
-      phoneE164: normalizedPhone,
+      phoneE164: normalizedPhone || undefined,
       normalizedName: `${normalizedFirstName} ${normalizedLastName}`,
       dob: dateOfBirth,
     });
@@ -114,7 +137,7 @@ export async function POST(request: Request) {
         eventType: 'vote_submission',
         severity: fraudCheck.score > 7 ? 'high' : 'medium',
         ipAddress: clientIp,
-        phoneE164: normalizedPhone,
+        phoneE164: normalizedPhone || undefined,
         deviceFingerprint: userAgent,
         details: { reasons: fraudCheck.reasons },
       });
@@ -131,15 +154,21 @@ export async function POST(request: Request) {
     const admin = getAdminClient();
     const supabase = await createClient();
 
-    // Verify OTP was validated for this phone
-    const { data: otpRecord, error: otpError } = await (admin as any)
+    // Verify OTP was validated for this phone or email
+    let otpQuery = (admin as any)
       .from('private_otps')
       .select('*')
-      .eq('phone', normalizedPhone)
       .eq('otp_hash', otpHash)
       .eq('is_verified', true)
-      .eq('is_used', false)
-      .single();
+      .eq('is_used', false);
+
+    if (verificationMethod === 'email') {
+      otpQuery = otpQuery.eq('email', normalizedEmail);
+    } else {
+      otpQuery = otpQuery.eq('phone', normalizedPhone);
+    }
+
+    const { data: otpRecord, error: otpError } = await otpQuery.single();
 
     if (otpError || !otpRecord) {
       return NextResponse.json(
@@ -174,15 +203,21 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check for duplicate vote (same normalized name + DOB + phone)
-    const { data: existingVote, error: duplicateError } = await admin
+    // Check for duplicate vote (same normalized name + DOB + phone/email)
+    let duplicateQuery = (admin as any)
       .from('private_voter_records')
       .select('id')
       .eq('normalized_first_name', normalizedFirstName)
       .eq('normalized_last_name', normalizedLastName)
-      .eq('date_of_birth', dateOfBirth)
-      .eq('normalized_phone', normalizedPhone)
-      .single();
+      .eq('date_of_birth', dateOfBirth);
+
+    if (verificationMethod === 'email') {
+      duplicateQuery = duplicateQuery.eq('normalized_email', normalizedEmail);
+    } else {
+      duplicateQuery = duplicateQuery.eq('normalized_phone', normalizedPhone);
+    }
+
+    const { data: existingVote, error: duplicateError } = await duplicateQuery.single();
 
     if (existingVote) {
       return NextResponse.json(
@@ -194,22 +229,60 @@ export async function POST(request: Request) {
       );
     }
 
-    // Submit vote (atomic transaction)
-    // @ts-ignore - RPC function parameters
-    const { data: voteData, error: voteError } = await admin.rpc('submit_vote_transaction', {
-      p_candidate_id: candidateId,
-      p_first_name: firstName,
-      p_last_name: lastName,
-      p_normalized_first_name: normalizedFirstName,
-      p_normalized_last_name: normalizedLastName,
-      p_date_of_birth: dateOfBirth,
-      p_phone: phone,
-      p_normalized_phone: normalizedPhone,
-      p_country_code: phoneResult.country || null,
-      p_ip: clientIp,
-      p_user_agent: userAgent,
-      p_otp_id: otpRecord.id,
-    });
+    // Submit vote - Insert voter record and vote
+    const voteId = crypto.randomUUID();
+    const voterId = crypto.randomUUID();
+
+    // Insert into private_voter_records
+    const voterRecord: any = {
+      id: voterId,
+      normalized_first_name: normalizedFirstName,
+      normalized_last_name: normalizedLastName,
+      date_of_birth: dateOfBirth,
+      ip_address: clientIp,
+      user_agent: userAgent,
+    };
+
+    if (verificationMethod === 'email') {
+      voterRecord.email = email;
+      voterRecord.normalized_email = normalizedEmail;
+      voterRecord.email_verified_at = new Date().toISOString();
+    } else {
+      voterRecord.normalized_phone = normalizedPhone;
+      voterRecord.country_code = (parseAndValidatePhone(phone!)).country || null;
+      voterRecord.phone_verified_at = new Date().toISOString();
+    }
+
+    const { error: voterError } = await (admin as any)
+      .from('private_voter_records')
+      .insert(voterRecord);
+
+    if (voterError) {
+      console.error('Error creating voter record:', voterError);
+      if (voterError.code === '23505') { // Unique constraint violation
+        return NextResponse.json(
+          {
+            error: 'You have already voted. Each person can only vote once.',
+            code: 'DUPLICATE_VOTE',
+          },
+          { status: 409 }
+        );
+      }
+      return NextResponse.json(
+        { error: 'Failed to submit vote. Please try again.' },
+        { status: 500 }
+      );
+    }
+
+    // Insert into public.votes
+    const { data: voteData, error: voteError } = await supabase
+      .from('votes')
+      .insert({
+        candidate_id: candidateId,
+        country: body.country,
+      })
+      .select('id')
+      .single();
 
     if (voteError) {
       console.error('Error submitting vote:', voteError);

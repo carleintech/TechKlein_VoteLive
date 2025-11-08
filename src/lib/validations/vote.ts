@@ -8,11 +8,17 @@ import { z } from 'zod';
  * Vote submission schema (Step 1)
  */
 export const voteSubmissionSchema = z.object({
-  name: z
+  firstName: z
     .string()
-    .min(2, 'Non dwe gen omwen 2 lèt')
-    .max(100, 'Non twò long')
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, 'Non ka gen sèlman lèt ak espas'),
+    .min(2, 'Prenon dwe gen omwen 2 lèt')
+    .max(50, 'Prenon twò long')
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, 'Prenon ka gen sèlman lèt ak espas'),
+  
+  lastName: z
+    .string()
+    .min(2, 'Siyati dwe gen omwen 2 lèt')
+    .max(50, 'Siyati twò long')
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, 'Siyati ka gen sèlman lèt ak espas'),
   
   dob: z
     .string()
@@ -24,18 +30,10 @@ export const voteSubmissionSchema = z.object({
       return age >= 18 && age <= 120;
     }, 'Ou dwe gen omwen 18 zan'),
   
-  phone: z
-    .string()
-    .min(10, 'Nimewo telefòn twò kout')
-    .regex(/^\+?[1-9]\d{1,14}$/, 'Fòma telefòn pa valab')
-    .optional()
-    .or(z.literal('')),
-  
   email: z
     .string()
     .email('Fòma email pa valab')
-    .optional()
-    .or(z.literal('')),
+    .min(1, 'Email obligatwa'),
   
   candidateId: z
     .number()
@@ -49,9 +47,6 @@ export const voteSubmissionSchema = z.object({
   mediaCode: z.string().optional().or(z.literal('')),
   
   language: z.enum(['ht', 'fr', 'en', 'es']).default('ht'),
-}).refine((data) => data.phone || data.email, {
-  message: 'Ou dwe bay telefòn oswa email',
-  path: ['phone'], // Show error on phone field
 });
 
 /**
